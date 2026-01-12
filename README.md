@@ -10,7 +10,7 @@ Predict stock sentiment and get Buy/Sell/Hold suggestions using news headlines.
 - Fetch latest stock price via Yahoo Finance
 
 ## Live Demo
-Frontend hosted on GitHub Pages: [Live Demo](https://<your-username>.github.io/<repo-name>/)
+Frontend hosted on GitHub Pages: [Live Demo](https://trishadar.github.io/stock-sentiment-predictor/)
 
 ## Backend Setup
 
