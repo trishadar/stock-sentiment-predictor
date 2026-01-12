@@ -2,11 +2,11 @@ from utils.news_fetcher import fetch_news
 from utils.sentiment import analyze_sentiment, aggregate_sentiment
 from utils.stock_fetcher import get_stock_price
 from utils.trading import simple_trade_signal
-from utils.backtester import backtest_stock
 
 def main():
     ticker = "AAPL"  # Change to any stock symbol
     print(f"Fetching news for {ticker}...")
+    
     articles = fetch_news(ticker, page_size=5)
     
     print("\n--- Headlines + Sentiment ---")
@@ -31,6 +31,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-    # Run backtest for last 30 days
-    backtest_stock("AAPL", days=30, page_size=5)
