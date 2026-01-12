@@ -1,1 +1,1 @@
-# ai-stock-sentiment-trader
+# stock-sentiment-predictor
