@@ -6,3 +6,5 @@ transformers
 scikit-learn
 backtrader
 tqdm
+flask
+python-dotenv
