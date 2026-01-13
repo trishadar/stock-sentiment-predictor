@@ -1,3 +1,8 @@
+html, body {
+  background-color: white !important; /* force white */
+  color: black !important; /* ensure text is readable */
+}
+
 body {
   font-family: Arial, sans-serif;
   max-width: 600px;
