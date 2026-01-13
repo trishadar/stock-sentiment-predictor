@@ -38,7 +38,7 @@ def analyze():
         daily_score = aggregate_sentiment(scored_headlines)
         print("RAW SENTIMENT:", daily_score)
         action = simple_trade_signal(daily_score)
-        stock_price = get_stock_price(ticker, period="5d", interval="1d")
+        stock_price = get_stock_price(ticker)
         print("stock_price:", stock_price)
 
         return jsonify({

@@ -1,12 +1,15 @@
 import yfinance as yf
 
-def get_stock_price(ticker: str, period="5d", interval="1d"):
-    """
-    Fetch historical stock price data.
-    period: how far back (e.g., "5d", "1mo")
-    interval: time granularity ("1d", "1h")
-    """
-    stock = yf.Ticker(ticker)
-    hist = stock.history(period=period, interval=interval)
-    # Only keep date and closing price
-    return hist['Close']
+def get_stock_price(ticker: str):
+    try:
+        stock = yf.Ticker(ticker)
+        hist = stock.history(period="1d")
+
+        if hist.empty:
+            return None
+
+        return round(float(hist["Close"].iloc[-1]), 2)
+
+    except Exception as e:
+        print("Stock price error:", e)
+        return None
