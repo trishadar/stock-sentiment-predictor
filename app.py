@@ -22,16 +22,17 @@ def analyze():
         articles = fetch_news(ticker, page_size=5)
         print("Fetched articles:", len(articles))
 
-        headlines = []
+        scored_headlines = []
         for a in articles:
-            label, score = analyze_sentiment(a["title"])
-            headlines.append({
+            text = f"{a.get('title','')} {a.get('content','')}"
+            label, score = analyze_sentiment(text)
+            scored_headlines.append({
                 "title": a["title"],
                 "sentiment": label,
                 "score": score
             })
 
-        daily_score = aggregate_sentiment(articles)
+        daily_score = aggregate_sentiment(scored_headlines)
         print("RAW SENTIMENT:", daily_score)
         action = simple_trade_signal(daily_score)
 
@@ -39,7 +40,7 @@ def analyze():
             "ticker": ticker,
             "daily_score": round(daily_score, 3),
             "action": action,
-            "headlines": headlines
+            "headlines": scored_headlines
         })
 
     except Exception as e:
