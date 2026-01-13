@@ -21,7 +21,7 @@ def analyze():
         ticker = data.get("ticker", "").upper()
         print("Received ticker:", ticker)
 
-        articles = fetch_news(ticker, page_size=5)
+        articles = fetch_news(ticker, page_size=10)
         print("Fetched articles:", len(articles))
 
         scored_headlines = []

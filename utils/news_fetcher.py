@@ -15,7 +15,7 @@ if NEWS_API_KEY is None:
 
 BASE_URL = "https://newsapi.org/v2/everything"
 
-def fetch_news(ticker: str, page_size=5):
+def fetch_news(ticker: str, page_size=10):
     if not NEWS_API_KEY:
         raise ValueError("NEWS_API_KEY not found. Set it in .env")
     
