@@ -4,7 +4,7 @@ from flask_cors import CORS
 from utils.news_fetcher import fetch_news
 from utils.sentiment import analyze_sentiment, aggregate_sentiment
 from utils.trading import simple_trade_signal
-from stock_fetcher import get_stock_price
+from utils.stock_fetcher import get_stock_price
 
 import os
 
@@ -39,6 +39,7 @@ def analyze():
         print("RAW SENTIMENT:", daily_score)
         action = simple_trade_signal(daily_score)
         stock_price = get_stock_price(ticker, period="5d", interval="1d")
+        print("stock_price:", stock_price)
 
         return jsonify({
             "ticker": ticker,
