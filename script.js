@@ -6,7 +6,7 @@ async function analyze() {
   result.innerText = "Analyzing...";
   headlinesList.innerHTML = "";
 
-  const res = await fetch("/analyze", {
+  const res = await fetch("https://stock-sentiment-predictor.onrender.com/analyze", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ ticker })
