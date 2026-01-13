@@ -16,11 +16,17 @@ def analyze_sentiment(text):
 
 def aggregate_sentiment(headlines):
     if not headlines:
+        print("not headlines")
         return 0.0
-
-    total = 0
+    print("yes headlines")
+    total = 0.0
     for h in headlines:
-        _, score = analyze_sentiment(h)
-        total += score
+        text = f"{h.get('title','')} {h.get('content','')}"
+        label, s = analyze_sentiment(text)
+        print(h)
+        print("label:", label, "compound:", s)
+        total += s   # use real compound score
 
     return total / len(headlines)
+
+

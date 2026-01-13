@@ -32,6 +32,7 @@ def analyze():
             })
 
         daily_score = aggregate_sentiment(articles)
+        print("RAW SENTIMENT:", daily_score)
         action = simple_trade_signal(daily_score)
 
         return jsonify({
