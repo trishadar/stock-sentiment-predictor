@@ -22,7 +22,7 @@ async function analyze() {
 
   data.headlines.forEach(h => {
     const li = document.createElement("li");
-    li.innerText = `${h.title} → ${h.sentiment}`;
+    li.innerText = `${h.title} → ${h.sentiment} (${h.score})`;
     headlinesList.appendChild(li);
   });
 }
