@@ -14,11 +14,11 @@ async function analyze() {
 
   const data = await res.json();
 
-  result.innerText = `${data.ticker}: ${data.action} (sentiment ${data.daily_score})`;
+  result.innerText = `${data.ticker}: ${data.action} (sentiment: ${data.daily_score})`;
 
   data.headlines.forEach(h => {
     const li = document.createElement("li");
-    li.innerText = `${h.title} → ${h.sentiment}`;
+    li.innerText = `${h.title} → ${h.sentiment} (${h.score})`;
     headlinesList.appendChild(li);
   });
 }

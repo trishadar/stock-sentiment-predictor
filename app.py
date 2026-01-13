@@ -26,7 +26,7 @@ def analyze():
 
         scored_headlines = []
         for a in articles:
-            text = f"{a.get('title','')} {a.get('content','')}"
+            text = f"{a.get('title','')} {a.get('description','')} {a.get('content','')}"
             label, score = analyze_sentiment(text)
             scored_headlines.append({
                 "title": a["title"],

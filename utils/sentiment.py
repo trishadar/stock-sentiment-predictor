@@ -19,8 +19,6 @@ def aggregate_sentiment(headlines):
         return 0.0
     total = 0.0
     for h in headlines:
-        # text = f"{h.get('title','')} {h.get('content','')}"
-        # label, s = analyze_sentiment(text)
         print(h)
         print("label:", h["sentiment"], "compound:", h["score"])
         total += h["score"]   # use real compound score
