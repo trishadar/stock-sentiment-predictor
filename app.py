@@ -7,7 +7,7 @@ from utils.trading import simple_trade_signal
 
 import os
 
-app = Flask(__name__, static_folder="", static_url_path="")
+app = Flask(__name__)
 CORS(app)
 
 @app.route("/")
