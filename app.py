@@ -5,7 +5,7 @@ from utils.news_fetcher import fetch_news
 from utils.sentiment import analyze_sentiment, aggregate_sentiment
 from utils.trading import simple_trade_signal
 
-app = Flask(__name__, static_folder="static", static_url_path="")
+app = Flask(__name__, static_folder="", static_url_path="")
 CORS(app)
 
 @app.route("/")
