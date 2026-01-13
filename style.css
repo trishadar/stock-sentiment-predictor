@@ -2,6 +2,8 @@ body {
   font-family: Arial, sans-serif;
   max-width: 600px;
   margin: 40px auto;
+  background-color: white; 
+  color: black; 
 }
 
 input {
