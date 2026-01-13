@@ -3,7 +3,7 @@ import requests
 from dotenv import load_dotenv
 
 # load_dotenv()  # Load .env file
-# API_KEY = os.getenv("NEWS_API_KEY")
+# NEWS_API_KEY = os.getenv("NEWS_API_KEY")
 
 # Load .env only if running locally
 if os.environ.get("NEWS_API_KEY") is None:
@@ -16,7 +16,7 @@ if NEWS_API_KEY is None:
 BASE_URL = "https://newsapi.org/v2/everything"
 
 def fetch_news(ticker: str, page_size=5):
-    if not API_KEY:
+    if not NEWS_API_KEY:
         raise ValueError("NEWS_API_KEY not found. Set it in .env")
     
     params = {
@@ -24,7 +24,7 @@ def fetch_news(ticker: str, page_size=5):
         "language": "en",
         "sortBy": "publishedAt",
         "pageSize": page_size,
-        "apiKey": API_KEY
+        "apiKey": NEWS_API_KEY
     }
     
     res = requests.get(BASE_URL, params=params)
