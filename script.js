@@ -14,7 +14,11 @@ async function analyze() {
 
   const data = await res.json();
 
-  result.innerText = `${data.ticker}: ${data.action} (sentiment: ${data.daily_score}) ${data.price}`;
+  if (data.error) {
+    result.innerText = `Error: ${data.error}`;
+    return;
+  }
+  result.innerText = `${data.ticker}: ${data.action} (sentiment: ${data.daily_score}, price: $${data.price})`;
 
   data.headlines.forEach(h => {
     const li = document.createElement("li");
