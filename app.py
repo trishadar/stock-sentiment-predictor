@@ -32,7 +32,8 @@ def analyze():
             scored_headlines.append({
                 "title": a["title"],
                 "sentiment": label,
-                "score": score
+                "score": score,
+                "url": a["url"]
             })
 
         daily_score = aggregate_sentiment(scored_headlines)

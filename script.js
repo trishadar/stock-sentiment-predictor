@@ -22,7 +22,14 @@ async function analyze() {
 
   data.headlines.forEach(h => {
     const li = document.createElement("li");
-    li.innerText = `${h.title} → ${h.sentiment} (${h.score})`;
+    const link = document.createElement("a");
+    link.href = h.url;
+    link.target = "_blank"; // open in new tab
+    link.rel = "noopener noreferrer";
+    link.innerText = h.title;
+
+    li.appendChild(link);
+    li.append(` → ${h.sentiment} (${h.score})`);
     headlinesList.appendChild(li);
   });
 }
