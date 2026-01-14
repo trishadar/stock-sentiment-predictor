@@ -1,4 +1,4 @@
-def simple_trade_signal(sentiment_score, threshold=0.1):
+def simple_trade_signal(sentiment_score, threshold=0.2):
     """
     Determine trade action based on aggregated daily sentiment.
     threshold: minimum sentiment magnitude to trigger buy/sell
