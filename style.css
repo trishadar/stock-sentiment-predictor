@@ -23,3 +23,13 @@ button {
   font-size: 16px;
   margin-left: 8px;
 }
+
+#headlines a {
+  color: #1a73e8;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+#headlines a:hover {
+  text-decoration: underline;
+}
