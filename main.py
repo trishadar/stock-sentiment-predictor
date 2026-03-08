@@ -4,7 +4,7 @@ from utils.stock_fetcher import get_stock_price
 from utils.trading import simple_trade_signal
 
 def main():
-    ticker = "AAPL"  # Change to any stock symbol
+    ticker = "AAPL" 
     print(f"Fetching news for {ticker}...")
     
     articles = fetch_news(ticker, page_size=5)

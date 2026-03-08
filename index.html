@@ -1,18 +1,676 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Stock Sentiment Trader</title>
-  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #050508;
+      --surface: #0d0d14;
+      --border: #1e1e2e;
+      --accent: #e8e8f0;
+      --muted: #444466;
+      --green: #00ff88;
+      --green-dim: #003322;
+      --yellow: #ffd700;
+      --yellow-dim: #332800;
+      --red: #ff3355;
+      --red-dim: #330011;
+      --mono: 'Share Tech Mono', monospace;
+      --display: 'Orbitron', monospace;
+      --body: 'Rajdhani', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--accent);
+      font-family: var(--body);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Scanline overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 3px,
+        rgba(0,0,0,0.08) 3px,
+        rgba(0,0,0,0.08) 4px
+      );
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* Grid bg */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(30,30,60,0.3) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(30,30,60,0.3) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 48px;
+      position: relative;
+    }
+
+    .header-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.3em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-family: var(--display);
+      font-size: clamp(28px, 6vw, 48px);
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      line-height: 1;
+      background: linear-gradient(135deg, #fff 0%, #aaaacc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header-sub {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.2em;
+      margin-top: 10px;
+    }
+
+    .header-line {
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--muted), transparent);
+      margin: 16px auto 0;
+    }
+
+    /* Search panel */
+    .search-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 28px;
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .search-panel::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(150,150,255,0.4), transparent);
+    }
+
+    .input-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .input-wrap {
+      flex: 1;
+      position: relative;
+    }
+
+    .input-prefix {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: var(--mono);
+      font-size: 14px;
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--accent);
+      font-family: var(--display);
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      padding: 14px 14px 14px 36px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      text-transform: uppercase;
+    }
+
+    input[type="text"]::placeholder {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-transform: none;
+    }
+
+    input[type="text"]:focus {
+      border-color: rgba(150,150,255,0.4);
+      box-shadow: 0 0 0 3px rgba(100,100,255,0.06), 0 0 20px rgba(100,100,255,0.05);
+    }
+
+    button#analyzeBtn {
+      background: var(--accent);
+      color: var(--bg);
+      border: none;
+      border-radius: 3px;
+      font-family: var(--display);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 14px 28px;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s, box-shadow 0.2s;
+      white-space: nowrap;
+    }
+
+    button#analyzeBtn:hover {
+      background: #fff;
+      box-shadow: 0 0 20px rgba(255,255,255,0.15);
+    }
+
+    button#analyzeBtn:active { transform: scale(0.97); }
+
+    button#analyzeBtn:disabled {
+      background: var(--muted);
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Loading bar */
+    .loading-bar {
+      height: 2px;
+      background: var(--border);
+      border-radius: 2px;
+      margin-top: 16px;
+      overflow: hidden;
+      display: none;
+    }
+
+    .loading-bar.active { display: block; }
+
+    .loading-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, rgba(150,150,255,0.5), #aaaaff, rgba(150,150,255,0.5));
+      animation: loadSweep 1.6s ease-in-out infinite;
+    }
+
+    @keyframes loadSweep {
+      0% { width: 0%; margin-left: 0%; }
+      50% { width: 60%; margin-left: 20%; }
+      100% { width: 0%; margin-left: 100%; }
+    }
+
+    /* Results panel */
+    #resultsPanel {
+      display: none;
+      animation: fadeUp 0.4s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Signal card */
+    .signal-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 32px;
+      margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 24px;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.4s, box-shadow 0.4s;
+    }
+
+    .signal-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      transition: background 0.4s;
+    }
+
+    .signal-card.buy {
+      border-color: rgba(0,255,136,0.25);
+      box-shadow: 0 0 40px rgba(0,255,136,0.06), inset 0 0 60px rgba(0,255,136,0.03);
+    }
+    .signal-card.buy::before { background: linear-gradient(90deg, transparent, var(--green), transparent); }
+
+    .signal-card.hold {
+      border-color: rgba(255,215,0,0.25);
+      box-shadow: 0 0 40px rgba(255,215,0,0.06), inset 0 0 60px rgba(255,215,0,0.03);
+    }
+    .signal-card.hold::before { background: linear-gradient(90deg, transparent, var(--yellow), transparent); }
+
+    .signal-card.sell {
+      border-color: rgba(255,51,85,0.25);
+      box-shadow: 0 0 40px rgba(255,51,85,0.06), inset 0 0 60px rgba(255,51,85,0.03);
+    }
+    .signal-card.sell::before { background: linear-gradient(90deg, transparent, var(--red), transparent); }
+
+    .signal-left {}
+
+    .signal-ticker {
+      font-family: var(--display);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .signal-price {
+      font-family: var(--display);
+      font-size: 36px;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+
+    .signal-meta {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .meta-item {}
+
+    .meta-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+
+    .meta-value {
+      font-family: var(--mono);
+      font-size: 18px;
+      font-weight: 400;
+    }
+
+    .meta-value.positive { color: var(--green); }
+    .meta-value.neutral { color: var(--yellow); }
+    .meta-value.negative { color: var(--red); }
+
+    /* Traffic light */
+    .traffic-light {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      background: #080810;
+      border: 1px solid #1a1a2a;
+      border-radius: 40px;
+      padding: 14px 12px;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.6), 0 4px 20px rgba(0,0,0,0.4);
+      position: relative;
+    }
+
+    .traffic-light::before {
+      content: '';
+      position: absolute;
+      top: -1px; left: 50%; transform: translateX(-50%);
+      width: 6px; height: 12px;
+      background: #1a1a2a;
+      border-radius: 3px 3px 0 0;
+    }
+
+    .light {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      margin: 6px 0;
+      position: relative;
+      transition: background 0.5s, box-shadow 0.5s;
+    }
+
+    .light.red-light {
+      background: var(--red-dim);
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+    }
+    .light.yellow-light {
+      background: var(--yellow-dim);
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+    }
+    .light.green-light {
+      background: var(--green-dim);
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+    }
+
+    .light.active-red {
+      background: var(--red);
+      box-shadow: 0 0 14px var(--red), 0 0 28px rgba(255,51,85,0.5), inset 0 1px 3px rgba(255,255,255,0.2);
+    }
+    .light.active-yellow {
+      background: var(--yellow);
+      box-shadow: 0 0 14px var(--yellow), 0 0 28px rgba(255,215,0,0.5), inset 0 1px 3px rgba(255,255,255,0.2);
+    }
+    .light.active-green {
+      background: var(--green);
+      box-shadow: 0 0 14px var(--green), 0 0 28px rgba(0,255,136,0.5), inset 0 1px 3px rgba(255,255,255,0.2);
+    }
+
+    .signal-badge {
+      font-family: var(--display);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      padding: 4px 10px;
+      border-radius: 2px;
+      margin-top: 8px;
+      text-align: center;
+    }
+
+    .badge-buy { background: var(--green-dim); color: var(--green); border: 1px solid rgba(0,255,136,0.3); }
+    .badge-hold { background: var(--yellow-dim); color: var(--yellow); border: 1px solid rgba(255,215,0,0.3); }
+    .badge-sell { background: var(--red-dim); color: var(--red); border: 1px solid rgba(255,51,85,0.3); }
+
+    /* Headlines */
+    .headlines-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .headlines-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .headlines-title {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .headlines-count {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .headline-item {
+      padding: 14px 24px;
+      border-bottom: 1px solid rgba(30,30,46,0.6);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+      transition: background 0.15s;
+      animation: fadeIn 0.3s ease both;
+    }
+
+    .headline-item:last-child { border-bottom: none; }
+    .headline-item:hover { background: rgba(255,255,255,0.02); }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateX(-8px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .headline-link {
+      font-family: var(--body);
+      font-size: 14px;
+      font-weight: 500;
+      color: #c8c8e0;
+      text-decoration: none;
+      line-height: 1.4;
+      transition: color 0.15s;
+    }
+
+    .headline-link:hover { color: #fff; }
+
+    .sentiment-tag {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      padding: 3px 8px;
+      border-radius: 2px;
+      white-space: nowrap;
+      text-align: right;
+    }
+
+    .tag-positive { background: var(--green-dim); color: var(--green); border: 1px solid rgba(0,255,136,0.2); }
+    .tag-neutral { background: var(--yellow-dim); color: var(--yellow); border: 1px solid rgba(255,215,0,0.2); }
+    .tag-negative { background: var(--red-dim); color: var(--red); border: 1px solid rgba(255,51,85,0.2); }
+
+    .score-num {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      text-align: right;
+      margin-top: 2px;
+    }
+
+    /* Error */
+    .error-msg {
+      background: rgba(255,51,85,0.07);
+      border: 1px solid rgba(255,51,85,0.2);
+      border-radius: 4px;
+      padding: 16px 20px;
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--red);
+      text-align: center;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      margin-top: 48px;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: #2a2a3a;
+    }
+
+    @media (max-width: 520px) {
+      .input-row { flex-direction: column; }
+      button#analyzeBtn { width: 100%; }
+      .signal-card { grid-template-columns: 1fr; }
+      .traffic-light { flex-direction: row; border-radius: 12px; padding: 12px 16px; justify-content: center; }
+      .traffic-light::before { display: none; }
+      .signal-badge { display: none; }
+    }
+  </style>
 </head>
 <body>
-  <h1>📈 Stock Sentiment Predictor</h1>
+  <div class="wrapper">
+    <header>
+      <div class="header-label">REAL-TIME ANALYSIS</div>
+      <h1>SENTIMENT<br/>TRADER</h1>
+      <div class="header-sub">NEWS · VADER · SIGNAL</div>
+      <div class="header-line"></div>
+    </header>
 
-  <input id="ticker" placeholder="Enter stock symbol (e.g. AAPL)" />
-  <button onclick="analyze()">Analyze</button>
+    <div class="search-panel">
+      <div class="input-row">
+        <div class="input-wrap">
+          <span class="input-prefix">$</span>
+          <input type="text" id="ticker" placeholder="Enter ticker symbol (e.g. AAPL)" autocomplete="off" spellcheck="false"/>
+        </div>
+        <button id="analyzeBtn" onclick="analyze()">ANALYZE</button>
+      </div>
+      <div class="loading-bar" id="loadingBar">
+        <div class="loading-bar-fill"></div>
+      </div>
+    </div>
 
-  <h2 id="result"></h2>
-  <ul id="headlines"></ul>
+    <div id="resultsPanel">
+      <!-- Signal card injected here -->
+    </div>
 
-  <script src="script.js"></script>
+    <footer>SENTIMENT ANALYSIS ENGINE · VADER NLP · NOT FINANCIAL ADVICE</footer>
+  </div>
+
+  <script>
+    const API_URL = "https://stock-sentiment-predictor.onrender.com/analyze";
+
+    async function analyze() {
+      const ticker = document.getElementById("ticker").value.trim().toUpperCase();
+      if (!ticker) return;
+
+      const btn = document.getElementById("analyzeBtn");
+      const loadingBar = document.getElementById("loadingBar");
+      const panel = document.getElementById("resultsPanel");
+
+      btn.disabled = true;
+      btn.textContent = "SCANNING...";
+      loadingBar.classList.add("active");
+      panel.style.display = "none";
+
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ticker })
+        });
+        const data = await res.json();
+
+        loadingBar.classList.remove("active");
+        panel.style.display = "block";
+
+        if (data.error) {
+          panel.innerHTML = `<div class="error-msg">⚠ ${data.error}</div>`;
+          return;
+        }
+
+        renderResults(data);
+      } catch (err) {
+        loadingBar.classList.remove("active");
+        panel.style.display = "block";
+        panel.innerHTML = `<div class="error-msg">⚠ Connection failed — check your backend.</div>`;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "ANALYZE";
+      }
+    }
+
+    function renderResults(data) {
+      const action = data.action; // BUY | HOLD | SELL
+      const score = data.daily_score;
+      const price = data.price;
+      const ticker = data.ticker;
+      const headlines = data.headlines || [];
+
+      const actionClass = action.toLowerCase();
+      const scoreClass = score > 0.05 ? "positive" : score < -0.05 ? "negative" : "neutral";
+
+      // Traffic light state
+      const lightRed    = action === "SELL" ? "active-red" : "";
+      const lightYellow = action === "HOLD" ? "active-yellow" : "";
+      const lightGreen  = action === "BUY"  ? "active-green" : "";
+
+      const badgeClass = `badge-${actionClass}`;
+
+      const panel = document.getElementById("resultsPanel");
+      panel.innerHTML = `
+        <div class="signal-card ${actionClass}">
+          <div class="signal-left">
+            <div class="signal-ticker">${ticker} · LIVE SIGNAL</div>
+            <div class="signal-price">${price !== null ? "$" + price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : "N/A"}</div>
+            <div class="signal-meta">
+              <div class="meta-item">
+                <div class="meta-label">SENTIMENT</div>
+                <div class="meta-value ${scoreClass}">${score > 0 ? "+" : ""}${score}</div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-label">SIGNAL</div>
+                <div class="meta-value ${actionClass === "buy" ? "positive" : actionClass === "sell" ? "negative" : "neutral"}">${action}</div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-label">SOURCES</div>
+                <div class="meta-value" style="color:var(--muted)">${headlines.length}</div>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+            <div class="traffic-light">
+              <div class="light red-light ${lightRed}"></div>
+              <div class="light yellow-light ${lightYellow}"></div>
+              <div class="light green-light ${lightGreen}"></div>
+            </div>
+            <div class="signal-badge ${badgeClass}">${action}</div>
+          </div>
+        </div>
+
+        <div class="headlines-panel">
+          <div class="headlines-header">
+            <span class="headlines-title">NEWS FEED</span>
+            <span class="headlines-count">${headlines.length} ARTICLES</span>
+          </div>
+          ${headlines.map((h, i) => {
+            const tagClass = h.sentiment === "positive" ? "tag-positive" : h.sentiment === "negative" ? "tag-negative" : "tag-neutral";
+            const delay = i * 40;
+            return `
+            <div class="headline-item" style="animation-delay:${delay}ms">
+              <a class="headline-link" href="${h.url}" target="_blank" rel="noopener noreferrer">${h.title}</a>
+              <div>
+                <div class="sentiment-tag ${tagClass}">${h.sentiment.toUpperCase()}</div>
+                <div class="score-num">${h.score > 0 ? "+" : ""}${h.score}</div>
+              </div>
+            </div>`;
+          }).join("")}
+        </div>
+      `;
+    }
+
+    // Allow Enter key
+    document.getElementById("ticker").addEventListener("keydown", e => {
+      if (e.key === "Enter") analyze();
+    });
+  </script>
 </body>
 </html>
