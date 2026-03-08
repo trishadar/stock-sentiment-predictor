@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Stock Sentiment Trader</title>
-  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet"/>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&family=Orbitron:wght@400;700;900&display=swap"
+    rel="stylesheet" />
   <style>
     :root {
       --bg: #050508;
       --surface: #0d0d14;
       --border: #1e1e2e;
       --accent: #e8e8f0;
-      --muted: #444466;
+      --muted: #7979a2;
       --green: #00ff88;
       --green-dim: #003322;
       --yellow: #ffd700;
@@ -23,7 +26,13 @@
       --body: 'Rajdhani', sans-serif;
     }
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     body {
       background: var(--bg);
@@ -38,13 +47,11 @@
       content: '';
       position: fixed;
       inset: 0;
-      background: repeating-linear-gradient(
-        to bottom,
-        transparent 0px,
-        transparent 3px,
-        rgba(0,0,0,0.08) 3px,
-        rgba(0,0,0,0.08) 4px
-      );
+      background: repeating-linear-gradient(to bottom,
+          transparent 0px,
+          transparent 3px,
+          rgba(0, 0, 0, 0.08) 3px,
+          rgba(0, 0, 0, 0.08) 4px);
       pointer-events: none;
       z-index: 9999;
     }
@@ -55,8 +62,8 @@
       position: fixed;
       inset: 0;
       background-image:
-        linear-gradient(rgba(30,30,60,0.3) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(30,30,60,0.3) 1px, transparent 1px);
+        linear-gradient(rgba(30, 30, 60, 0.3) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(30, 30, 60, 0.3) 1px, transparent 1px);
       background-size: 40px 40px;
       pointer-events: none;
       z-index: 0;
@@ -127,9 +134,11 @@
     .search-panel::before {
       content: '';
       position: absolute;
-      top: 0; left: 0; right: 0;
+      top: 0;
+      left: 0;
+      right: 0;
       height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(150,150,255,0.4), transparent);
+      background: linear-gradient(90deg, transparent, rgba(150, 150, 255, 0.4), transparent);
     }
 
     .input-row {
@@ -180,8 +189,8 @@
     }
 
     input[type="text"]:focus {
-      border-color: rgba(150,150,255,0.4);
-      box-shadow: 0 0 0 3px rgba(100,100,255,0.06), 0 0 20px rgba(100,100,255,0.05);
+      border-color: rgba(150, 150, 255, 0.4);
+      box-shadow: 0 0 0 3px rgba(100, 100, 255, 0.06), 0 0 20px rgba(100, 100, 255, 0.05);
     }
 
     button#analyzeBtn {
@@ -202,10 +211,12 @@
 
     button#analyzeBtn:hover {
       background: #fff;
-      box-shadow: 0 0 20px rgba(255,255,255,0.15);
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
     }
 
-    button#analyzeBtn:active { transform: scale(0.97); }
+    button#analyzeBtn:active {
+      transform: scale(0.97);
+    }
 
     button#analyzeBtn:disabled {
       background: var(--muted);
@@ -223,19 +234,32 @@
       display: none;
     }
 
-    .loading-bar.active { display: block; }
+    .loading-bar.active {
+      display: block;
+    }
 
     .loading-bar-fill {
       height: 100%;
       width: 0%;
-      background: linear-gradient(90deg, rgba(150,150,255,0.5), #aaaaff, rgba(150,150,255,0.5));
+      background: linear-gradient(90deg, rgba(150, 150, 255, 0.5), #aaaaff, rgba(150, 150, 255, 0.5));
       animation: loadSweep 1.6s ease-in-out infinite;
     }
 
     @keyframes loadSweep {
-      0% { width: 0%; margin-left: 0%; }
-      50% { width: 60%; margin-left: 20%; }
-      100% { width: 0%; margin-left: 100%; }
+      0% {
+        width: 0%;
+        margin-left: 0%;
+      }
+
+      50% {
+        width: 60%;
+        margin-left: 20%;
+      }
+
+      100% {
+        width: 0%;
+        margin-left: 100%;
+      }
     }
 
     /* Results panel */
@@ -245,8 +269,15 @@
     }
 
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     /* Signal card */
@@ -268,28 +299,39 @@
     .signal-card::before {
       content: '';
       position: absolute;
-      top: 0; left: 0; right: 0;
+      top: 0;
+      left: 0;
+      right: 0;
       height: 1px;
       transition: background 0.4s;
     }
 
     .signal-card.buy {
-      border-color: rgba(0,255,136,0.25);
-      box-shadow: 0 0 40px rgba(0,255,136,0.06), inset 0 0 60px rgba(0,255,136,0.03);
+      border-color: rgba(0, 255, 136, 0.25);
+      box-shadow: 0 0 40px rgba(0, 255, 136, 0.06), inset 0 0 60px rgba(0, 255, 136, 0.03);
     }
-    .signal-card.buy::before { background: linear-gradient(90deg, transparent, var(--green), transparent); }
+
+    .signal-card.buy::before {
+      background: linear-gradient(90deg, transparent, var(--green), transparent);
+    }
 
     .signal-card.hold {
-      border-color: rgba(255,215,0,0.25);
-      box-shadow: 0 0 40px rgba(255,215,0,0.06), inset 0 0 60px rgba(255,215,0,0.03);
+      border-color: rgba(255, 215, 0, 0.25);
+      box-shadow: 0 0 40px rgba(255, 215, 0, 0.06), inset 0 0 60px rgba(255, 215, 0, 0.03);
     }
-    .signal-card.hold::before { background: linear-gradient(90deg, transparent, var(--yellow), transparent); }
+
+    .signal-card.hold::before {
+      background: linear-gradient(90deg, transparent, var(--yellow), transparent);
+    }
 
     .signal-card.sell {
-      border-color: rgba(255,51,85,0.25);
-      box-shadow: 0 0 40px rgba(255,51,85,0.06), inset 0 0 60px rgba(255,51,85,0.03);
+      border-color: rgba(255, 51, 85, 0.25);
+      box-shadow: 0 0 40px rgba(255, 51, 85, 0.06), inset 0 0 60px rgba(255, 51, 85, 0.03);
     }
-    .signal-card.sell::before { background: linear-gradient(90deg, transparent, var(--red), transparent); }
+
+    .signal-card.sell::before {
+      background: linear-gradient(90deg, transparent, var(--red), transparent);
+    }
 
     .signal-left {}
 
@@ -334,9 +376,17 @@
       font-weight: 400;
     }
 
-    .meta-value.positive { color: var(--green); }
-    .meta-value.neutral { color: var(--yellow); }
-    .meta-value.negative { color: var(--red); }
+    .meta-value.positive {
+      color: var(--green);
+    }
+
+    .meta-value.neutral {
+      color: var(--yellow);
+    }
+
+    .meta-value.negative {
+      color: var(--red);
+    }
 
     /* Traffic light */
     .traffic-light {
@@ -348,15 +398,18 @@
       border: 1px solid #1a1a2a;
       border-radius: 40px;
       padding: 14px 12px;
-      box-shadow: inset 0 2px 8px rgba(0,0,0,0.6), 0 4px 20px rgba(0,0,0,0.4);
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6), 0 4px 20px rgba(0, 0, 0, 0.4);
       position: relative;
     }
 
     .traffic-light::before {
       content: '';
       position: absolute;
-      top: -1px; left: 50%; transform: translateX(-50%);
-      width: 6px; height: 12px;
+      top: -1px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 6px;
+      height: 12px;
       background: #1a1a2a;
       border-radius: 3px 3px 0 0;
     }
@@ -372,28 +425,32 @@
 
     .light.red-light {
       background: var(--red-dim);
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
     }
+
     .light.yellow-light {
       background: var(--yellow-dim);
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
     }
+
     .light.green-light {
       background: var(--green-dim);
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
     }
 
     .light.active-red {
       background: var(--red);
-      box-shadow: 0 0 14px var(--red), 0 0 28px rgba(255,51,85,0.5), inset 0 1px 3px rgba(255,255,255,0.2);
+      box-shadow: 0 0 14px var(--red), 0 0 28px rgba(255, 51, 85, 0.5), inset 0 1px 3px rgba(255, 255, 255, 0.2);
     }
+
     .light.active-yellow {
       background: var(--yellow);
-      box-shadow: 0 0 14px var(--yellow), 0 0 28px rgba(255,215,0,0.5), inset 0 1px 3px rgba(255,255,255,0.2);
+      box-shadow: 0 0 14px var(--yellow), 0 0 28px rgba(255, 215, 0, 0.5), inset 0 1px 3px rgba(255, 255, 255, 0.2);
     }
+
     .light.active-green {
       background: var(--green);
-      box-shadow: 0 0 14px var(--green), 0 0 28px rgba(0,255,136,0.5), inset 0 1px 3px rgba(255,255,255,0.2);
+      box-shadow: 0 0 14px var(--green), 0 0 28px rgba(0, 255, 136, 0.5), inset 0 1px 3px rgba(255, 255, 255, 0.2);
     }
 
     .signal-badge {
@@ -407,9 +464,23 @@
       text-align: center;
     }
 
-    .badge-buy { background: var(--green-dim); color: var(--green); border: 1px solid rgba(0,255,136,0.3); }
-    .badge-hold { background: var(--yellow-dim); color: var(--yellow); border: 1px solid rgba(255,215,0,0.3); }
-    .badge-sell { background: var(--red-dim); color: var(--red); border: 1px solid rgba(255,51,85,0.3); }
+    .badge-buy {
+      background: var(--green-dim);
+      color: var(--green);
+      border: 1px solid rgba(0, 255, 136, 0.3);
+    }
+
+    .badge-hold {
+      background: var(--yellow-dim);
+      color: var(--yellow);
+      border: 1px solid rgba(255, 215, 0, 0.3);
+    }
+
+    .badge-sell {
+      background: var(--red-dim);
+      color: var(--red);
+      border: 1px solid rgba(255, 51, 85, 0.3);
+    }
 
     /* Headlines */
     .headlines-panel {
@@ -443,7 +514,7 @@
 
     .headline-item {
       padding: 14px 24px;
-      border-bottom: 1px solid rgba(30,30,46,0.6);
+      border-bottom: 1px solid rgba(30, 30, 46, 0.6);
       display: grid;
       grid-template-columns: 1fr auto;
       gap: 16px;
@@ -452,12 +523,24 @@
       animation: fadeIn 0.3s ease both;
     }
 
-    .headline-item:last-child { border-bottom: none; }
-    .headline-item:hover { background: rgba(255,255,255,0.02); }
+    .headline-item:last-child {
+      border-bottom: none;
+    }
+
+    .headline-item:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateX(-8px); }
-      to { opacity: 1; transform: translateX(0); }
+      from {
+        opacity: 0;
+        transform: translateX(-8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
     }
 
     .headline-link {
@@ -470,7 +553,9 @@
       transition: color 0.15s;
     }
 
-    .headline-link:hover { color: #fff; }
+    .headline-link:hover {
+      color: #fff;
+    }
 
     .sentiment-tag {
       font-family: var(--mono);
@@ -482,9 +567,23 @@
       text-align: right;
     }
 
-    .tag-positive { background: var(--green-dim); color: var(--green); border: 1px solid rgba(0,255,136,0.2); }
-    .tag-neutral { background: var(--yellow-dim); color: var(--yellow); border: 1px solid rgba(255,215,0,0.2); }
-    .tag-negative { background: var(--red-dim); color: var(--red); border: 1px solid rgba(255,51,85,0.2); }
+    .tag-positive {
+      background: var(--green-dim);
+      color: var(--green);
+      border: 1px solid rgba(0, 255, 136, 0.2);
+    }
+
+    .tag-neutral {
+      background: var(--yellow-dim);
+      color: var(--yellow);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+    }
+
+    .tag-negative {
+      background: var(--red-dim);
+      color: var(--red);
+      border: 1px solid rgba(255, 51, 85, 0.2);
+    }
 
     .score-num {
       font-family: var(--mono);
@@ -496,8 +595,8 @@
 
     /* Error */
     .error-msg {
-      background: rgba(255,51,85,0.07);
-      border: 1px solid rgba(255,51,85,0.2);
+      background: rgba(255, 51, 85, 0.07);
+      border: 1px solid rgba(255, 51, 85, 0.2);
       border-radius: 4px;
       padding: 16px 20px;
       font-family: var(--mono);
@@ -517,20 +616,41 @@
     }
 
     @media (max-width: 520px) {
-      .input-row { flex-direction: column; }
-      button#analyzeBtn { width: 100%; }
-      .signal-card { grid-template-columns: 1fr; }
-      .traffic-light { flex-direction: row; border-radius: 12px; padding: 12px 16px; justify-content: center; }
-      .traffic-light::before { display: none; }
-      .signal-badge { display: none; }
+      .input-row {
+        flex-direction: column;
+      }
+
+      button#analyzeBtn {
+        width: 100%;
+      }
+
+      .signal-card {
+        grid-template-columns: 1fr;
+      }
+
+      .traffic-light {
+        flex-direction: row;
+        border-radius: 12px;
+        padding: 12px 16px;
+        justify-content: center;
+      }
+
+      .traffic-light::before {
+        display: none;
+      }
+
+      .signal-badge {
+        display: none;
+      }
     }
   </style>
 </head>
+
 <body>
   <div class="wrapper">
     <header>
       <div class="header-label">REAL-TIME ANALYSIS</div>
-      <h1>SENTIMENT<br/>TRADER</h1>
+      <h1>SENTIMENT<br />TRADER</h1>
       <div class="header-sub">NEWS · VADER · SIGNAL</div>
       <div class="header-line"></div>
     </header>
@@ -539,7 +659,8 @@
       <div class="input-row">
         <div class="input-wrap">
           <span class="input-prefix">$</span>
-          <input type="text" id="ticker" placeholder="Enter ticker symbol (e.g. AAPL)" autocomplete="off" spellcheck="false"/>
+          <input type="text" id="ticker" placeholder="Enter ticker symbol (e.g. AAPL)" autocomplete="off"
+            spellcheck="false" />
         </div>
         <button id="analyzeBtn" onclick="analyze()">ANALYZE</button>
       </div>
@@ -609,9 +730,9 @@
       const scoreClass = score > 0.05 ? "positive" : score < -0.05 ? "negative" : "neutral";
 
       // Traffic light state
-      const lightRed    = action === "SELL" ? "active-red" : "";
+      const lightRed = action === "SELL" ? "active-red" : "";
       const lightYellow = action === "HOLD" ? "active-yellow" : "";
-      const lightGreen  = action === "BUY"  ? "active-green" : "";
+      const lightGreen = action === "BUY" ? "active-green" : "";
 
       const badgeClass = `badge-${actionClass}`;
 
@@ -620,7 +741,7 @@
         <div class="signal-card ${actionClass}">
           <div class="signal-left">
             <div class="signal-ticker">${ticker} · LIVE SIGNAL</div>
-            <div class="signal-price">${price !== null ? "$" + price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : "N/A"}</div>
+            <div class="signal-price">${price !== null ? "$" + price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "N/A"}</div>
             <div class="signal-meta">
               <div class="meta-item">
                 <div class="meta-label">SENTIMENT</div>
@@ -652,9 +773,9 @@
             <span class="headlines-count">${headlines.length} ARTICLES</span>
           </div>
           ${headlines.map((h, i) => {
-            const tagClass = h.sentiment === "positive" ? "tag-positive" : h.sentiment === "negative" ? "tag-negative" : "tag-neutral";
-            const delay = i * 40;
-            return `
+        const tagClass = h.sentiment === "positive" ? "tag-positive" : h.sentiment === "negative" ? "tag-negative" : "tag-neutral";
+        const delay = i * 40;
+        return `
             <div class="headline-item" style="animation-delay:${delay}ms">
               <a class="headline-link" href="${h.url}" target="_blank" rel="noopener noreferrer">${h.title}</a>
               <div>
@@ -662,7 +783,7 @@
                 <div class="score-num">${h.score > 0 ? "+" : ""}${h.score}</div>
               </div>
             </div>`;
-          }).join("")}
+      }).join("")}
         </div>
       `;
     }
@@ -673,4 +794,5 @@
     });
   </script>
 </body>
+
 </html>
